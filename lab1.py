@@ -14,14 +14,42 @@ def scrape_wikipedia(url):
     else:
         return None, None
 
+def find_places_cities(text):
+    places = []
+    cities = []
+    
+    lines = text.split("\n")
+    for line in lines:
+        if "tourist attractions" in line.lower():
+            start_index = line.index(":") + 1
+            places.extend([place.strip() for place in line[start_index:].split(",")])
+        if "cities" in line.lower():
+            start_index = line.index(":") + 1
+            cities.extend([city.strip() for city in line[start_index:].split(",")])
+
+    return places, cities
+
 def main():
-    st.title("Wikipedia Web Scraper")
-    url = st.text_input("Enter the Wikipedia URL:", "https://en.wikipedia.org/wiki/Lahore")
+    st.title("Wikipedia Places and Cities Scraper")
+    url = "https://en.wikipedia.org/wiki/Lahore"
     if st.button("Scrape"):
         title, text = scrape_wikipedia(url)
         if title and text:
             st.header(title)
-            st.write(text)
+            places, cities = find_places_cities(text)
+            
+            if places:
+                st.subheader("Tourist Attractions:")
+                for place in places:
+                    st.write(place)
+            
+            if cities:
+                st.subheader("Cities:")
+                for city in cities:
+                    st.write(city)
+            
+            if not places and not cities:
+                st.write("No places or cities found.")
         else:
             st.error("Failed to scrape the webpage.")
 
