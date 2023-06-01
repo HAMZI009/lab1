@@ -2,17 +2,28 @@ import requests
 from bs4 import BeautifulSoup
 import streamlit as st
 
-# Define the URL to scrape
-url = 'https://en.wikipedia.org/wiki/Lahore'
+def scrape_wikipedia(url):
+    response = requests.get(url)
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.content, 'html.parser')
+        title = soup.find('h1').text
+        content_div = soup.find(id='mw-content-text')
+        paragraphs = content_div.find_all('p')
+        text = '\n\n'.join([p.text for p in paragraphs])
+        return title, text
+    else:
+        return None, None
 
-# Send a GET request to the URL
-response = requests.get(url)
+def main():
+    st.title("Wikipedia Web Scraper")
+    url = st.text_input("Enter the Wikipedia URL:", "https://en.wikipedia.org/wiki/Lahore")
+    if st.button("Scrape"):
+        title, text = scrape_wikipedia(url)
+        if title and text:
+            st.header(title)
+            st.write(text)
+        else:
+            st.error("Failed to scrape the webpage.")
 
-# Parse the HTML content using BeautifulSoup
-soup = BeautifulSoup(response.content, 'html.parser')
-
-# Find the main heading of the Wikipedia page
-main_heading = soup.find(id='firstHeading').text
-
-# Display the main heading using Streamlit
-st.title(main_heading)
+if __name__ == '__main__':
+    main()
