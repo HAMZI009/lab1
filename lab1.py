@@ -14,44 +14,28 @@ def scrape_wikipedia(url):
     else:
         return None, None
 
-def find_places_cities(text):
-    places = []
-    cities = []
-    
-    lines = text.split("\n")
-    for line in lines:
-        if "tourist attractions" in line.lower():
-            if ":" in line:
-                start_index = line.index(":") + 1
-                places.extend([place.strip() for place in line[start_index:].split(",")])
-        if "cities" in line.lower():
-            if ":" in line:
-                start_index = line.index(":") + 1
-                cities.extend([city.strip() for city in line[start_index:].split(",")])
-
-    return places, cities
+def find_badshahi_mosque_info(text):
+    info = ""
+    sections = text.split("\n\n")
+    for section in sections:
+        if "Badshahi Mosque" in section:
+            info = section
+            break
+    return info
 
 def main():
-    st.title("Wikipedia Places and Cities Scraper")
+    st.title("Badshahi Mosque Wikipedia Scraper")
     url = "https://en.wikipedia.org/wiki/Lahore"
     if st.button("Scrape"):
         title, text = scrape_wikipedia(url)
         if title and text:
             st.header(title)
-            places, cities = find_places_cities(text)
-            
-            if places:
-                st.subheader("Tourist Attractions:")
-                for place in places:
-                    st.write(place)
-            
-            if cities:
-                st.subheader("Cities:")
-                for city in cities:
-                    st.write(city)
-            
-            if not places and not cities:
-                st.write("No places or cities found.")
+            badshahi_info = find_badshahi_mosque_info(text)
+            if badshahi_info:
+                st.subheader("Badshahi Mosque")
+                st.write(badshahi_info)
+            else:
+                st.write("No information about Badshahi Mosque found.")
         else:
             st.error("Failed to scrape the webpage.")
 
