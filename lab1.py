@@ -21,11 +21,13 @@ def find_places_cities(text):
     lines = text.split("\n")
     for line in lines:
         if "tourist attractions" in line.lower():
-            start_index = line.index(":") + 1
-            places.extend([place.strip() for place in line[start_index:].split(",")])
+            if ":" in line:
+                start_index = line.index(":") + 1
+                places.extend([place.strip() for place in line[start_index:].split(",")])
         if "cities" in line.lower():
-            start_index = line.index(":") + 1
-            cities.extend([city.strip() for city in line[start_index:].split(",")])
+            if ":" in line:
+                start_index = line.index(":") + 1
+                cities.extend([city.strip() for city in line[start_index:].split(",")])
 
     return places, cities
 
