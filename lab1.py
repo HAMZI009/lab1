@@ -18,7 +18,7 @@ def find_badshahi_mosque_info(text):
     info = ""
     sections = text.split("\n\n")
     for section in sections:
-        if "Badshahi Mosque" in section:
+        if "Badshahi Mosque" in section or "بادشاہی مسجد" in section:
             info = section
             break
     return info
@@ -32,7 +32,7 @@ def main():
             st.header(title)
             badshahi_info = find_badshahi_mosque_info(text)
             if badshahi_info:
-                st.subheader("Badshahi Mosque")
+                st.subheader("Badshahi Mosque (بادشاہی مسجد)")
                 st.write(badshahi_info)
             else:
                 st.write("No information about Badshahi Mosque found.")
